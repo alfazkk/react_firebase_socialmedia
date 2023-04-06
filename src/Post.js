@@ -16,6 +16,8 @@ export default function Post({ post, self, setPosts }) {
   const [comment, setComment] = useState("");
   const [more, setMore] = useState(false);
   const PF = "https://social-media-567c8.web.app/";
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
     db.collection("users")
       .get()
@@ -109,10 +111,11 @@ export default function Post({ post, self, setPosts }) {
               className="postProfileImg"
               src={
                 user?.profilePicture
-                  ? user?.profilePicture
+                  ? user.profilePicture
                   : PF + "no-avatar.png"
               }
               alt=""
+              loading="lazy"
             />
             <span className="postUsername">{user?.username}</span>
             <span className="postDate">
@@ -138,7 +141,13 @@ export default function Post({ post, self, setPosts }) {
         </div>
         <div className="postCenter">
           <span className="postText">{post?.desc}</span>
-          <img className="postImg" src={post?.photo} alt="" />
+          <img
+            className="postImg"
+            src={post?.photo}
+            loading="lazy"
+            // onLoad={() => setLoaded(true)}
+            alt=""
+          />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
@@ -202,7 +211,7 @@ const Comment = ({ data }) => {
   return (
     <div className="comment">
       <div className="commentLeft">
-        <img src={userData.profilePicture} alt="" />
+        <img src={userData.profilePicture} loading="lazy" alt="" />
       </div>
       <div className="commentRight">
         <div className="commentRightTop">

@@ -4,6 +4,11 @@
   position: fixed;
 }
 
+a{
+  text-decoration: none;
+  color: black;
+}
+
 .sidebarList {
   padding: 0;
   margin: 0;
@@ -16,6 +21,11 @@
   padding: .5em;
 }
 
+.sidebarListItem:hover{
+  cursor: pointer;
+  background-color: rgb(240, 236, 236);
+}
+
 .sidebarIcon {
   margin-right: 15px;
 }
@@ -26,11 +36,6 @@
   padding: 10px;
   border-radius: 5px;
   font-weight: 500;
-}
-
-.logout:hover{
-  cursor: pointer;
-  background-color: rgb(240, 236, 236);
 }
 
 @media screen and (max-width: 570px) {

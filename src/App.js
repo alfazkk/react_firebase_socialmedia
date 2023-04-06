@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Register from "./Register";
 import Login from "./Login";
 import Home from "./Home";
+import Messenger from "./Messenger";
 import Profile, { SearchedProfile } from "./Profile";
 import {
   BrowserRouter as Router,
@@ -38,6 +39,13 @@ export default function App() {
           <Route
             path="/profile/:id"
             element={user ? <SearchedProfile /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/messenger"
+            exact
+            element={
+              user ? <Messenger user={user} /> : <Navigate to="/login" />
+            }
           />
         </Routes>
       </Router>

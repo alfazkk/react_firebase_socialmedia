@@ -1,0 +1,76 @@
+.messenger{
+  width: 100%;
+  height: 90vh;
+  display: flex;
+}
+.userBar{
+  width: 25%;
+  height: 90vh;
+  overflow-y: scroll;
+}
+.userBar::-webkit-scrollbar{
+  display: none;
+}
+.userList{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.userList li{
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 5px;
+  color: black;
+  margin: 5px;
+}
+.userList li:hover{
+  background-color: aliceblue;
+}
+
+.conversation{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1em;
+  justify-content: space-between;
+}
+
+.userTitle{
+  padding: 1em;
+  background-color: whitesmoke;
+}
+
+.userMessages{
+  height: 70%;
+  overflow-y: scroll;
+}
+.userMessages::-webkit-scrollbar{
+  display: none;
+}
+.message{
+  border-radius: 3px;
+  padding: 10px;
+  background-color:aquamarine;
+  width: max-content;
+  margin-bottom: 10px;
+}
+.leftMsg{
+  margin-right: auto;
+}
+.rightMsg{
+  margin-left: auto;
+}
+
+.msgBox{
+  width: 100%;
+  display: flex;
+  gap: 5PX;
+}
+.msgBox > textarea{
+  width: 100%;
+  height: 100%;
+  outline: none;
+}

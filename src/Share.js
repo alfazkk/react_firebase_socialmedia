@@ -4,11 +4,14 @@ import { Cancel, Label, PermMedia, Room } from "@mui/icons-material";
 import db from "./firebase";
 import firebase from "firebase";
 import axios from "axios";
+import Compressor from "compressorjs";
+import { useStateProvider } from "./StateProvider";
 
-export default function Share({ setPosts, user }) {
+export default function Share({ setReload, user }) {
   const desc = useRef();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useStateProvider();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -17,26 +20,37 @@ export default function Share({ setPosts, user }) {
         setLoading(true);
         if (file) {
           try {
-            const data = new FormData();
-            data.append("file", file);
-            data.append("upload_preset", "o6d3xtcb");
-            await axios
-              .post(`https://api.cloudinary.com/v1_1/aluuu/image/upload`, data)
-              .then((res) => {
-                const post = {
-                  desc: desc.current.value,
-                  photo: res.data.url,
-                  date: firebase.firestore.FieldValue.serverTimestamp(),
-                  userId: user.userId,
-                  like: [],
-                };
-                db.collection("posts").add(post);
-                setPosts((prev) => [post, ...prev]);
-                setFile(null);
-                desc.current.value = "";
-              });
-            setLoading(false);
-            alert("post shared succesfully");
+            new Compressor(file, {
+              quality: 0.4,
+              success: async (compressedImg) => {
+                const data = new FormData();
+                data.append("file", compressedImg);
+                data.append("upload_preset", "o6d3xtcb");
+                await axios
+                  .post(
+                    `https://api.cloudinary.com/v1_1/aluuu/image/upload`,
+                    data
+                  )
+                  .then((res) => {
+                    const post = {
+                      desc: desc.current.value,
+                      photo: res.data.url,
+                      date: firebase.firestore.FieldValue.serverTimestamp(),
+                      userId: user.userId,
+                      like: [],
+                    };
+                    db.collection("posts").add(post);
+                    dispatch({
+                      type: "ADD_POST",
+                      data: post,
+                    });
+                    setReload({});
+                    desc.current.value = "";
+                  });
+                setLoading(false);
+                alert("post shared succesfully");
+              },
+            });
           } catch (error) {
             setLoading(false);
             alert("error occured");
@@ -51,7 +65,7 @@ export default function Share({ setPosts, user }) {
               like: [],
             };
             db.collection("posts").add(post);
-            setPosts((prev) => [post, ...prev]);
+            setReload({});
             setFile(null);
             desc.current.value = "";
             setLoading(false);

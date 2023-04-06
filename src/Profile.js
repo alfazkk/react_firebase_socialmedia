@@ -7,6 +7,7 @@ import axios from "axios";
 import { useStateProvider } from "./StateProvider";
 import Post from "./Post";
 import { useParams } from "react-router-dom";
+import Compressor from "compressorjs";
 
 export default function Profile({ user }) {
   const [username, setUserName] = useState(user?.username);
@@ -42,44 +43,49 @@ export default function Profile({ user }) {
     setLoading(true);
     if (file) {
       try {
-        const data = new FormData();
-        data.append("file", file);
-        data.append("upload_preset", "o6d3xtcb");
-        await axios
-          .post(`https://api.cloudinary.com/v1_1/aluuu/image/upload`, data)
-          .then((res) => {
-            db.collection("users").doc(user.userId).update({
-              username,
-              email,
-              name,
-              phone,
-              profilePicture: res.data.url,
-            });
-            dispatch({
-              type: "SET_USER",
-              user: {
-                userId: user.userId,
-                username,
-                email,
-                name,
-                phone,
-                profilePicture: res.data.url,
-              },
-            });
-            sessionStorage.setItem(
-              "user",
-              JSON.stringify({
-                userId: user.userId,
-                username,
-                email,
-                name,
-                phone,
-                profilePicture: res.data.url,
-              })
-            );
-          });
-        setLoading(false);
-        alert("profile updated succesfully");
+        new Compressor(file, {
+          quality: 0.8,
+          success: async (compressedImg) => {
+            const data = new FormData();
+            data.append("file", compressedImg);
+            data.append("upload_preset", "o6d3xtcb");
+            await axios
+              .post(`https://api.cloudinary.com/v1_1/aluuu/image/upload`, data)
+              .then((res) => {
+                db.collection("users").doc(user.userId).update({
+                  username,
+                  email,
+                  name,
+                  phone,
+                  profilePicture: res.data.url,
+                });
+                dispatch({
+                  type: "SET_USER",
+                  user: {
+                    userId: user.userId,
+                    username,
+                    email,
+                    name,
+                    phone,
+                    profilePicture: res.data.url,
+                  },
+                });
+                sessionStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    userId: user.userId,
+                    username,
+                    email,
+                    name,
+                    phone,
+                    profilePicture: res.data.url,
+                  })
+                );
+              });
+            setLoading(false);
+            alert("profile updated succesfully");
+          },
+        });
       } catch (error) {
         setLoading(false);
         alert("error occured");
